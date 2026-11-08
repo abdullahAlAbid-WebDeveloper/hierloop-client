@@ -45,6 +45,15 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --font-manrope: var(--font-manrope);
+    --font-instrument: var(--font-instrument);
+    --font-jakarta: var(--font-jakarta);
+    --font-space-mono: var(--font-space-mono);
+    --color-brand: var(--brand);
+    --color-brand-soft: var(--brand-soft);
+    --color-nav: var(--nav);
+    --color-nav-foreground: var(--nav-foreground);
+    --color-nav-muted: var(--nav-muted);
 }
 
 :root {
@@ -72,6 +81,11 @@
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
     --radius: 0.625rem;
+    --brand: #5c53fe;
+    --brand-soft: #8f88ff;
+    --nav: #222222;
+    --nav-foreground: #ffffff;
+    --nav-muted: #a8a8a8;
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.205 0 0);
