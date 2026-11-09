@@ -6,6 +6,7 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 
 import { AuthShell } from "@/components/auth/auth-shell"
 import { Button } from "@/components/ui/button"
+import { authClient } from "@/lib/auth-client"
 
 const inputClassName =
   "h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pr-3.5 pl-10 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-brand/70 focus:bg-white/[0.06] focus:ring-2 focus:ring-brand/30"
@@ -13,7 +14,7 @@ const inputClassName =
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
@@ -23,8 +24,23 @@ const SignInPage = () => {
       rememberMe: formData.get("rememberMe") === "on",
     }
 
-    // TODO: wire this up to the auth API later.
-    console.log("Sign in form data:", data)
+    await handleSignIn({
+      email: data.email,
+      password: data.password,
+    })
+  }
+
+  const handleSignIn = async (data: {
+    email: string
+    password: string
+  }) => {
+    const { error } = await authClient.signIn.email({
+      email: data.email,
+      password: data.password,
+      callbackURL: "/",
+    })
+
+    if (error) console.error("Sign in failed:", error)
   }
 
   return (

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react"
+import { ChevronDown, Eye, EyeOff, Lock, Mail, User, Users } from "lucide-react"
 
 import { AuthShell } from "@/components/auth/auth-shell"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,8 @@ import { authClient } from "@/lib/auth-client"
 
 const inputClassName =
   "h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pr-3.5 pl-10 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-brand/70 focus:bg-white/[0.06] focus:ring-2 focus:ring-brand/30"
+
+type UserRole = "seeker" | "recruiter" | "admin"
 
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -23,6 +25,7 @@ const SignUpPage = () => {
       email: String(formData.get("email") ?? ""),
       password: String(formData.get("password") ?? ""),
       confirmPassword: String(formData.get("confirmPassword") ?? ""),
+      role: String(formData.get("role") ?? "seeker") as UserRole,
       acceptedTerms: formData.get("acceptedTerms") === "on",
     }
 
@@ -30,14 +33,21 @@ const SignUpPage = () => {
       name: data.fullName,
       email: data.email,
       password: data.password,
+      role: data.role,
     })
   }
 
-  const handleSignUp = async (data: { name: string; email: string; password: string }) => {
+  const handleSignUp = async (data: {
+    name: string
+    email: string
+    password: string
+    role: UserRole
+  }) => {
     const { error } = await authClient.signUp.email({
       name: data.name,
       email: data.email,
       password: data.password,
+      role: data.role,
       callbackURL: "/", // An optional URL to redirect to after the user signs up.
     })
 
@@ -107,6 +117,38 @@ const SignUpPage = () => {
               placeholder="you@example.com"
               required
               className={inputClassName}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="role"
+            className="font-manrope text-sm font-medium text-white/80"
+          >
+            I am a
+          </label>
+          <div className="relative">
+            <Users
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-white/40"
+              strokeWidth={1.75}
+            />
+            <select
+              id="role"
+              name="role"
+              defaultValue="seeker"
+              required
+              className={`${inputClassName} cursor-pointer appearance-none pr-10 [&>option]:bg-neutral-900 [&>option]:text-white`}
+            >
+              <option value="seeker">Job seeker</option>
+              <option value="recruiter">Recruiter</option>
+              <option value="admin">Admin</option>
+            </select>
+            <ChevronDown
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-white/40"
+              strokeWidth={1.75}
             />
           </div>
         </div>
