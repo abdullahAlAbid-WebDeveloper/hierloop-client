@@ -15,6 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { useSession, signOut } from "@/lib/auth-client"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -35,6 +36,11 @@ const logo = (
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const { data: session } = useSession()
+
+  const handleSignOut = async () => {
+    await signOut()
+  }
 
   return (
     <header className="sticky top-0 z-50 mx-auto w-full max-w-[1440px] px-4 pt-4 sm:px-6 lg:px-[60px] lg:pt-6">
@@ -66,24 +72,34 @@ export function SiteHeader() {
           <span aria-hidden className="h-6 w-px bg-nav-muted/40" />
 
           <div className="flex items-center gap-4">
-            <Link
-              href="/sign-in"
-              className={cn(
-                buttonVariants({ variant: "ghost" }),
-                "h-[52px] rounded-[12px] px-6 font-manrope text-lg font-semibold text-brand hover:bg-white/5 hover:text-brand-soft"
-              )}
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/sign-up"
-              className={cn(
-                buttonVariants(),
-                "h-[52px] rounded-[12px] border border-[#090a15]/10 bg-brand px-6 font-instrument text-lg font-medium text-white hover:bg-brand-soft"
-              )}
-            >
-              Get Started
-            </Link>
+            {session?.user ? (
+              <>
+                <span>Welcome,{session.user.name}</span>
+                <Button onClick={handleSignOut}>sign out</Button>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Link
+                  href="/sign-in"
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    "h-[52px] rounded-[12px] px-6 font-manrope text-lg font-semibold text-brand hover:bg-white/5 hover:text-brand-soft"
+                  )}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className={cn(
+                    buttonVariants(),
+                    "h-[52px] rounded-[12px] border border-[#090a15]/10 bg-brand px-6 font-instrument text-lg font-medium text-white hover:bg-brand-soft"
+                  )}
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -140,7 +156,7 @@ export function SiteHeader() {
                 )}
               >
                 Sign In
-              </Link> 
+              </Link>
               <Link
                 href="/get-started"
                 onClick={() => setOpen(false)}

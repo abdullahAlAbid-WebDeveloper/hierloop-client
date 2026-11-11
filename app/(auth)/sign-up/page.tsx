@@ -7,6 +7,7 @@ import { ChevronDown, Eye, EyeOff, Lock, Mail, User, Users } from "lucide-react"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
 
 const inputClassName =
   "h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pr-3.5 pl-10 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-brand/70 focus:bg-white/[0.06] focus:ring-2 focus:ring-brand/30"
@@ -14,6 +15,8 @@ const inputClassName =
 type UserRole = "seeker" | "recruiter" | "admin"
 
 const SignUpPage = () => {
+  const router = useRouter()
+
   const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -50,6 +53,10 @@ const SignUpPage = () => {
       role: data.role,
       callbackURL: "/", // An optional URL to redirect to after the user signs up.
     })
+    if (!error) {
+      router.refresh();
+      router.push("/")
+    }
 
     if (error) console.error("Sign up failed:", error)
   }
