@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/sidebar"
 import { useSession } from "@/lib/auth-client"
 import type { UserRole } from "@/lib/types/user"
-import Link from "next/link"
 import {
   Bookmark,
   Briefcase,
@@ -25,6 +24,7 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react"
+import Link from "next/link"
 
 type MenuItem = {
   id: string

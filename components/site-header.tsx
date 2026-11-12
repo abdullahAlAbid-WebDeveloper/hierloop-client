@@ -17,11 +17,7 @@ import {
 } from "@/components/ui/sheet"
 import { useSession, signOut } from "@/lib/auth-client"
 
-const navLinks = [
-  { label: "Browse Jobs", href: "/jobs" },
-  { label: "Company", href: "/companies" },
-  { label: "Pricing", href: "/pricing" },
-]
+
 
 const logo = (
   <Image
@@ -37,6 +33,14 @@ const logo = (
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
   const { data: session } = useSession()
+
+
+  const navLinks = [
+  { label: "Browse Jobs", href: "/jobs" },
+  { label: "Company", href: "/companies" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "DashBoard", href: `/dashboard/${session?.user.role || 'seeker'}` },
+]
 
   const handleSignOut = async () => {
     await signOut()
