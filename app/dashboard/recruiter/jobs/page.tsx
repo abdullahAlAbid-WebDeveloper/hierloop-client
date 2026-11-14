@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { Eye, Pencil, Plus, Trash2, Users } from "lucide-react"
+import { Eye, Pencil, Plus, Users } from "lucide-react"
 
+import { DeleteJobDialog } from "@/app/components/DeleteJobDialog"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -80,12 +81,18 @@ const statusStyles: Record<JobStatus, string> = {
   expired: "border-border bg-muted text-muted-foreground",
 }
 
+// Only fall back to "active" when a record has no status at all.
+const getStatus = (status?: string): JobStatus =>
+  (status?.trim() || "active") as JobStatus
+
+const defaultStatusStyle = "border-border bg-muted text-muted-foreground"
+
 const iconButtonClass =
   "flex size-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 
 const ManageJobsPage = async () => {
   const jobs: JobRow[] = (await getJobs()) as JobRow[]
-
+  
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
@@ -260,9 +267,12 @@ const ManageJobsPage = async () => {
                   <TableCell className={cellClass}>
                     <Badge
                       variant="outline"
-                      className={cn("capitalize", statusStyles[job.status])}
+                      className={cn(
+                        "capitalize",
+                        statusStyles[getStatus(job.status)] ?? defaultStatusStyle
+                      )}
                     >
-                      {job.status}
+                      {getStatus(job.status)}
                     </Badge>
                   </TableCell>
 
@@ -299,18 +309,10 @@ const ManageJobsPage = async () => {
                       >
                         <Pencil aria-hidden className="size-4" />
                       </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`Delete ${job.title}`}
-                        className={cn(
-                          iconButtonClass,
-                          "hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
-                        )}
-                      >
-                        <Trash2 aria-hidden className="size-4" />
-                      </Button>
+                      <DeleteJobDialog
+                        jobId={job._id}
+                        jobTitle={job.title}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

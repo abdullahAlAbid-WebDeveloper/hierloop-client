@@ -124,7 +124,7 @@ export async function POST(request: Request) {
       recruiterId: session.user.id,
       recruiterName: session.user.name,
       recruiterEmail: session.user.email,
-      status: "published",
+      status: clean(body.status) || "active",
       createdAt: now,
       updatedAt: now,
     }

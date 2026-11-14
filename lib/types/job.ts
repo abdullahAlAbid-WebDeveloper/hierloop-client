@@ -40,6 +40,8 @@ export type JobFormData = {
   requirements: string
   skills: string
   contactEmail: string
+  /** Optional; the API stores "active" when this is not provided. */
+  status?: string
 }
 
 export const EMPTY_JOB_FORM: JobFormData = {

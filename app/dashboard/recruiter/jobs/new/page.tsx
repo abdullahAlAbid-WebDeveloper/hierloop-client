@@ -41,6 +41,7 @@ import {
   type JobFormData,
 } from "@/lib/types/job"
 import { cn } from "@/lib/utils"
+import { toast, Toast } from "@/components/ui/toast"
 
 const NewJobsPage = () => {
   const [form, setForm] = useState<JobFormData>(EMPTY_JOB_FORM)
@@ -61,6 +62,7 @@ const NewJobsPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
     setError("")
 
     const salaryMin = form.salaryMin ? Number(form.salaryMin) : null
@@ -513,6 +515,7 @@ const NewJobsPage = () => {
                 <Plus className="size-4" />
               )}
               {submitting ? "Publishing..." : "Publish job"}
+
             </Button>
           </div>
         </form>

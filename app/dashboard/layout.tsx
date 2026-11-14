@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react"
+import { Toaster } from "@/components/ui/toast"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { DashBoardSideber } from '../components/DashBoardSideBer';
+import { DashBoardSideber } from "../components/DashBoardSideBer"
 
 const DashBoardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -10,8 +11,9 @@ const DashBoardLayout = ({ children }: { children: React.ReactNode }) => {
         <SidebarTrigger />
         {children}
       </main>
+      <Toaster />
     </SidebarProvider>
   )
-};
+}
 
-export default DashBoardLayout;
+export default DashBoardLayout

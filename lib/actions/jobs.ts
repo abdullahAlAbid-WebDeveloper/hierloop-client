@@ -11,6 +11,7 @@ export const createJob = async (data: JobFormData) => {
     },
     body: JSON.stringify({
       ...data,
+      status: data.status?.trim() || "active",
       salaryMin: data.salaryMin ? Number(data.salaryMin) : null,
       salaryMax: data.salaryMax ? Number(data.salaryMax) : null,
       skills: data.skills
@@ -25,4 +26,12 @@ export const createJob = async (data: JobFormData) => {
   })
 
   return res.json()
+}
+
+
+export const deleteJob =async(jobId:string)=>{
+  const res = await fetch(`${BASE_URL}/jobs/${jobId}`,{
+    method:"DELETE"
+  })
+  return res.json();
 }
