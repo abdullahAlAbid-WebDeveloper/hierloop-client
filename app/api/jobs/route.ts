@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db"
 import {
   EMPLOYMENT_TYPES,
   EXPERIENCE_LEVELS,
+  JOB_STATUSES,
   WORKPLACE_TYPES,
 } from "@/lib/types/job"
 
@@ -124,7 +125,7 @@ export async function POST(request: Request) {
       recruiterId: session.user.id,
       recruiterName: session.user.name,
       recruiterEmail: session.user.email,
-      status: clean(body.status) || "active",
+      status: pickOption(body.status, JOB_STATUSES, "active"),
       createdAt: now,
       updatedAt: now,
     }

@@ -1,7 +1,6 @@
 import type { JobFormData } from "@/lib/types/job"
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
 
 export const createJob = async (data: JobFormData) => {
   const res = await fetch(`${BASE_URL}/jobs`, {
@@ -28,10 +27,9 @@ export const createJob = async (data: JobFormData) => {
   return res.json()
 }
 
-
-export const deleteJob =async(jobId:string)=>{
-  const res = await fetch(`${BASE_URL}/jobs/${jobId}`,{
-    method:"DELETE"
+export const deleteJob = async (jobId: string) => {
+  const res = await fetch(`${BASE_URL}/jobs/${jobId}`, {
+    method: "DELETE",
   })
-  return res.json();
+  return res.json()
 }

@@ -24,6 +24,9 @@ export const JOB_CATEGORIES = [
   "Human Resources",
   "Other",
 ] as const
+export const JOB_STATUSES = ["active", "expired"] as const
+
+export type JobStatus = (typeof JOB_STATUSES)[number]
 
 export type JobFormData = {
   title: string
@@ -33,6 +36,7 @@ export type JobFormData = {
   employmentType: (typeof EMPLOYMENT_TYPES)[number]
   experienceLevel: (typeof EXPERIENCE_LEVELS)[number]
   category: string
+  status: JobStatus
   salaryMin: string
   salaryMax: string
   deadline: string
@@ -40,8 +44,6 @@ export type JobFormData = {
   requirements: string
   skills: string
   contactEmail: string
-  /** Optional; the API stores "active" when this is not provided. */
-  status?: string
 }
 
 export const EMPTY_JOB_FORM: JobFormData = {
@@ -52,6 +54,7 @@ export const EMPTY_JOB_FORM: JobFormData = {
   employmentType: "Full-time",
   experienceLevel: "Mid level",
   category: "Engineering",
+  status: "active",
   salaryMin: "",
   salaryMax: "",
   deadline: "",
@@ -60,3 +63,19 @@ export const EMPTY_JOB_FORM: JobFormData = {
   skills: "",
   contactEmail: "",
 }
+
+// Table rows carry the same flat shape the "Post a new job" form stores
+// (JobFormData), plus the extra fields only the table needs.
+export type JobRow = JobFormData & {
+  _id: string
+  applicants: number
+  /** Relative post date, e.g. "Posted 4d ago". */
+  posted: string
+}
+
+/**
+ * Only fall back to "active" when a record has no status at all.
+ * Any status the user (or an existing record) provided is kept.
+ */
+export const resolveJobStatus = (status?: string): JobStatus =>
+  (status?.trim() || "active") as JobStatus

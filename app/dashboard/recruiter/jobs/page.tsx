@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Eye, Pencil, Plus, Users } from "lucide-react"
 
 import { DeleteJobDialog } from "@/app/components/DeleteJobDialog"
-import { Badge } from "@/components/ui/badge"
+import { JobStatusBadge } from "@/app/components/JobStatusBadge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Table,
@@ -12,21 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { JobFormData } from "@/lib/types/job"
+import type { JobRow } from "@/lib/types/job"
 import { cn } from "@/lib/utils"
 import { getJobs } from "@/lib/api/jobs"
-
-type JobStatus = "active" | "expired"
-
-// Table rows carry the same flat shape the "Post a new job" form stores
-// (JobFormData), plus the extra fields only the table needs.
-export type JobRow = JobFormData & {
-  _id: string
-  applicants: number
-  status: JobStatus
-  /** Relative post date, e.g. "Posted 4d ago". */
-  posted: string
-}
 
 // Dummy data so the table can be reviewed before it is wired to the API.
 
@@ -76,23 +64,12 @@ const cellClass = "px-3 py-3.5"
 const typePillClass =
   "inline-flex items-center whitespace-nowrap rounded-lg border bg-muted/50 px-2.5 py-0.5 text-xs text-foreground/80"
 
-const statusStyles: Record<JobStatus, string> = {
-  active: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700",
-  expired: "border-border bg-muted text-muted-foreground",
-}
-
-// Only fall back to "active" when a record has no status at all.
-const getStatus = (status?: string): JobStatus =>
-  (status?.trim() || "active") as JobStatus
-
-const defaultStatusStyle = "border-border bg-muted text-muted-foreground"
-
 const iconButtonClass =
   "flex size-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 
 const ManageJobsPage = async () => {
   const jobs: JobRow[] = (await getJobs()) as JobRow[]
-  
+
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
@@ -265,15 +242,7 @@ const ManageJobsPage = async () => {
 
                   {/* Status */}
                   <TableCell className={cellClass}>
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "capitalize",
-                        statusStyles[getStatus(job.status)] ?? defaultStatusStyle
-                      )}
-                    >
-                      {getStatus(job.status)}
-                    </Badge>
+                    <JobStatusBadge status={job.status} />
                   </TableCell>
 
                   {/* Deadline */}
@@ -309,10 +278,7 @@ const ManageJobsPage = async () => {
                       >
                         <Pencil aria-hidden className="size-4" />
                       </Button>
-                      <DeleteJobDialog
-                        jobId={job._id}
-                        jobTitle={job.title}
-                      />
+                      <DeleteJobDialog jobId={job._id} jobTitle={job.title} />
                     </div>
                   </TableCell>
                 </TableRow>
