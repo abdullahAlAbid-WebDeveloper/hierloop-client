@@ -36,7 +36,7 @@ export function SiteHeader() {
 
 
   const navLinks = [
-  { label: "Browse Jobs", href: "/jobs" },
+  { label: "Browse Jobs", href: "/browse-jobs" },
   { label: "Company", href: "/companies" },
   { label: "Pricing", href: "/pricing" },
   { label: "DashBoard", href: `/dashboard/${session?.user.role || 'seeker'}` },

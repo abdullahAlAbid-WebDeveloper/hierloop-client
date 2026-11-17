@@ -2,6 +2,7 @@ import {
   Geist,
   Geist_Mono,
   Instrument_Sans,
+  Inter,
   Manrope,
   Plus_Jakarta_Sans,
   Space_Mono,
@@ -10,9 +11,9 @@ import {
 import "./globals.css"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -27,6 +28,11 @@ const manrope = Manrope({
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-instrument",
+})
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
 })
 
 const jakarta = Plus_Jakarta_Sans({
@@ -57,6 +63,7 @@ export default function RootLayout({
         geist.variable,
         manrope.variable,
         instrumentSans.variable,
+        inter.variable,
         jakarta.variable,
         spaceMono.variable
       )}
