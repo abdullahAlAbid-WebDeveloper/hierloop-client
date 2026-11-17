@@ -12,11 +12,12 @@ import {
   ShieldCheck,
 } from "lucide-react"
 
+import { ApplyJobButton } from "@/app/components/apply-job-button"
 import { SaveJobButton } from "@/app/components/save-job-button"
 import { headingClass, panelClass, pillClass } from "@/app/components/styles"
-import { getJobById } from "@/lib/api/jobs"
 import type { JobRow } from "@/lib/types/job"
 import { cn } from "@/lib/utils"
+import { getJobById } from "@/lib/actions/jobs"
 
 const toAmount = (value: string) => {
   const amount = Number(value)
@@ -92,11 +93,6 @@ const BrowseJobDetailsPage = async ({
 
   const responsibilities = toList(job.requirements)
   const skills = toList(job.skills)
-  const applyHref = job.contactEmail
-    ? `mailto:${job.contactEmail}?subject=${encodeURIComponent(
-        `Application for ${job.title}`
-      )}`
-    : undefined
 
   return (
     <main className="min-h-svh bg-[#08080a] font-inter text-[#ededef]">
@@ -111,7 +107,7 @@ const BrowseJobDetailsPage = async ({
           <div className="flex items-center gap-6">
             <div className="flex size-20 shrink-0 items-center justify-center rounded-2xl border border-white/[0.07] bg-[#222228] lg:size-24">
               <span className="text-3xl font-semibold text-[#ededef]">
-                {job.company.charAt(0) || "?"}
+                {job.company?.charAt(0) || "?"}
               </span>
             </div>
 
@@ -137,18 +133,7 @@ const BrowseJobDetailsPage = async ({
           <div className="flex items-center gap-3">
             <SaveJobButton />
 
-            {applyHref ? (
-              <a
-                href={applyHref}
-                className="inline-flex h-14 items-center justify-center rounded-xl bg-white px-6 text-base font-semibold text-[#0b0b0c] transition-colors hover:bg-white/90"
-              >
-                Apply Now
-              </a>
-            ) : (
-              <span className="inline-flex h-14 items-center justify-center rounded-xl bg-white/50 px-6 text-base font-semibold text-[#0b0b0c]">
-                Apply Now
-              </span>
-            )}
+            <ApplyJobButton job={job} />
           </div>
         </section>
 
@@ -244,7 +229,7 @@ const BrowseJobDetailsPage = async ({
 
             <div className="mt-6 flex h-[200px] items-center justify-center rounded-xl border border-white/[0.07] bg-gradient-to-br from-[#1a1a1f] via-[#141418] to-[#0c0c0f]">
               <span className="text-5xl font-semibold text-white/20">
-                {job.company.charAt(0) || "?"}
+                {job.company?.charAt(0) || "?"}
               </span>
             </div>
 
@@ -266,15 +251,6 @@ const BrowseJobDetailsPage = async ({
                 </dd>
               </div>
             </dl>
-
-            {applyHref ? (
-              <a
-                href={applyHref}
-                className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-white/10 text-sm font-medium text-[#ededef] transition-colors hover:bg-white/5"
-              >
-                Contact Recruiter
-              </a>
-            ) : null}
           </aside>
         </div>
       </div>

@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 
 import { AuthShell } from "@/components/auth/auth-shell"
 import { Button } from "@/components/ui/button"
@@ -11,7 +12,9 @@ import { authClient } from "@/lib/auth-client"
 const inputClassName =
   "h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pr-3.5 pl-10 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-brand/70 focus:bg-white/[0.06] focus:ring-2 focus:ring-brand/30"
 
-const SignInPage = () => {
+const SignInForm = () => {
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirectTo") ?? "/"
   const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -30,14 +33,11 @@ const SignInPage = () => {
     })
   }
 
-  const handleSignIn = async (data: {
-    email: string
-    password: string
-  }) => {
+  const handleSignIn = async (data: { email: string; password: string }) => {
     const { error } = await authClient.signIn.email({
       email: data.email,
       password: data.password,
-      callbackURL: "/",
+      callbackURL: redirectTo,
     })
 
     if (error) console.error("Sign in failed:", error)
@@ -147,6 +147,14 @@ const SignInPage = () => {
         </Button>
       </form>
     </AuthShell>
+  )
+}
+
+const SignInPage = () => {
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
   )
 }
 

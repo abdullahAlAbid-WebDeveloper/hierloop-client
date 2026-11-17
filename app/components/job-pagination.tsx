@@ -18,6 +18,7 @@ export function JobPagination({
 }: JobPaginationProps) {
   const goToPage = (target: number) => {
     // TODO: navigate to the requested page (URL param or client state).
+    void target
   }
 
   // First three pages, an ellipsis, then the last page — as in the design.

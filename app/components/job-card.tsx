@@ -38,7 +38,7 @@ export function JobCard({ job }: JobCardProps) {
     >
       <div className="flex size-16 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-[#222228]">
         <span className="text-xl font-semibold text-[#ededef]">
-          {job.company.charAt(0) || "?"}
+          {job.company?.charAt(0) || "?"}
         </span>
       </div>
 

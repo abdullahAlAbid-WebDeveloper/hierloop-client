@@ -39,7 +39,6 @@ import {
   type JobStatus,
 } from "@/lib/types/job"
 import { cn } from "@/lib/utils"
-import { toast, Toast } from "@/components/ui/toast"
 
 const NewJobsPage = () => {
   const [form, setForm] = useState<JobFormData>(EMPTY_JOB_FORM)
