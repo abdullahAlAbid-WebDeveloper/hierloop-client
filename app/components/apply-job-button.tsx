@@ -1,10 +1,17 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 
+import { toast } from "@/components/ui/toast"
 import { useSession } from "@/lib/auth-client"
+import {
+  applyToAJob,
+  buildApplicationInput,
+  FREE_APPLICATION_LIMIT,
+  getApplicationsByUser,
+} from "@/lib/actions/applications"
 import type { JobRow } from "@/lib/types/job"
-import { applyToAJob } from "@/lib/actions/applications"
 
 type ApplyJobButtonProps = {
   job: JobRow
@@ -14,34 +21,72 @@ type ApplyJobButtonProps = {
 export function ApplyJobButton({ job }: ApplyJobButtonProps) {
   const { data: session } = useSession()
   const router = useRouter()
+  const [isApplying, setIsApplying] = useState(false)
 
-  const handleApplyNow = async() => {
+  const handleApplyNow = async () => {
     // Ask the visitor to sign in first, then bring them back to this job.
     if (!session?.user) {
       const redirectTo = `/browse-jobs/${job._id}`
       router.push(`/sign-in?redirectTo=${encodeURIComponent(redirectTo)}`)
       return
-    } else if (session.user.role === "seeker") {
-      const application = {
-        jobId: job._id,
-        userId: session.user.id,
-        email: session.user.email,
-        jobTitle: job.title,
+    }
+
+    if (session.user.role !== "seeker") {
+      toast.add({
+        type: "error",
+        title: "Only job seekers can apply",
+        description:
+          "Sign in with a job seeker account to apply for this role.",
+      })
+      return
+    }
+
+    setIsApplying(true)
+
+    try {
+      const applications = await getApplicationsByUser(session.user.id)
+
+      // More than the free limit? Payment page e pathiye dao.
+      if (applications.length >= FREE_APPLICATION_LIMIT) {
+        router.push("/payment")
+        return
       }
 
-      try {
-        const res = await applyToAJob(application)
+      const res = await applyToAJob(
+        buildApplicationInput(job, {
+          id: session.user.id,
+          name: session.user.name,
+          email: session.user.email,
+        })
+      )
 
-        if (res.insertedId) {
-          router.push("/browse-jobs")
-        } else {
-          console.error("Could not submit application:", res.error)
-        }
-      } catch (error) {
-        console.error("Could not submit application:", error)
+      if (res?.error) {
+        toast.add({
+          type: "error",
+          title: "Could not submit application",
+          description: res.error,
+        })
+        return
       }
-    } else {
-      console.log("user is not job seeker")
+
+      toast.add({
+        type: "success",
+        title: "Application submitted",
+        description: `Your application for ${job.title} was sent to ${job.company}.`,
+      })
+
+      // The new application is now in the seeker's list.
+      router.push("/dashboard/seeker/applications")
+      router.refresh()
+    } catch (error) {
+      console.error("Could not submit application:", error)
+      toast.add({
+        type: "error",
+        title: "Could not submit application",
+        description: "Please try again.",
+      })
+    } finally {
+      setIsApplying(false)
     }
   }
 
@@ -49,9 +94,10 @@ export function ApplyJobButton({ job }: ApplyJobButtonProps) {
     <button
       type="button"
       onClick={handleApplyNow}
-      className="inline-flex h-14 items-center justify-center rounded-xl bg-white px-6 text-base font-semibold text-[#0b0b0c] transition-colors hover:bg-white/90"
+      disabled={isApplying}
+      className="inline-flex h-14 items-center justify-center rounded-xl bg-white px-6 text-base font-semibold text-[#0b0b0c] transition-colors hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
     >
-      Apply Now
+      {isApplying ? "Applying…" : "Apply Now"}
     </button>
   )
 }
